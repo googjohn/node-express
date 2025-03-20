@@ -9,6 +9,18 @@ const PORT = 5000;
 /* routing >> refers to determining how the application reacts/responds from a request to a specific endpoint/path/URI, specific HTTP request method (get, post, put, delete, patch)
   >> each route can have one or more handler functions commonly called middleware function. these functions are executed when the path matches with the request path/route
 */
+
+/* route definition takes this structure: 
+
+  ## app.method(path, handler/middleware)
+
+  app >> an instance of express
+  method >> http method (get, post, put, delete, patch)
+  path >> is a path on the server where the request is directed to
+  handler/middleware >> is the function executed when the router matched with the request
+
+*/
+
 // different HTTP methods with the same path '/'
 let getRequestCount = 0;
 app.get('/', (request, response, next) => {
