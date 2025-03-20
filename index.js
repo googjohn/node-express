@@ -2,6 +2,7 @@
 const express = require('express');
 // call express to create instance
 const app = express();
+const cors = require('cors');
 
 const PORT = 5000;
 
@@ -68,6 +69,12 @@ app.use(express.static('public'))
 app.use('/static', express.static('public'))
 
 /* example for multiple middleware functions in one app.use() without path argument */
+
+// app.use((request, response, next) => {
+//   // this will stop here and ignore remaing app.use() below.
+//   response.send('You request for localhost/. control stops here')
+// })
+
 app.use((request, response, next) => {
   request.requestTime = new Date().toISOString();
   next(); // has to call to pass the control to the next middleware otherwise will cause error/block the request-response cycle
@@ -79,6 +86,14 @@ app.use((request, response, next) => {
   // response.send('Finally after multiple middlewares!!! It worked!')
   next()
 })
+
+// error handling middleware has special signature with four arguments
+// will not be called if there is no error object passed in next() function call
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  console.log('hello')
+  res.status(500).send('Something broke!');
+});
 
 /* using app.use(path, middleware) with path argument */
 // because we use a path, this will only be called if our request comes from the same route/path
@@ -92,7 +107,63 @@ app.use('/api', (request, response) => {
   response.send('You are accessing localhost/api')
 })
 
+/* some more thirdyparty middleware passed in app.use() */
+app.use(cors());
+
+// request body compression
+/* const compression = require('compression')
+app.use(compression()) */
+
+// HTTP request logger
+/* const morgan = require('morgan)
+app.use(morgan('dev')) */
+
+// cookie parser
+/* const cookieParser = require('cookie-parser') 
+app.use(cookieParser()) */
+
+// session middleware
+/* const session = require('session');
+app.use(session({
+  secret: 'something secret',
+  resave: false,
+  saveUninitialized: true,
+})) */
+
+// security middleware
+/* const helmet = require('helmet')
+app.use(helmet()) */
+
+// custom application middleware like authentication and validation 
+// authentication middleware
+/* app.use((request, response, next) => {
+  const token = request.headers.authorization;
+  if (token) {
+    request.user = verifyToken(token);
+  }
+  next();
+}) */
+
+// request validation
+/* app.use((request, response, next) => {
+  if (request.method === 'POST' && !req.is('application/json')) {
+    return response.status(400).send('Content-type must be application/json')
+  }
+  next();
+}) */
+
+// rate limiting
+/* app.use((request, response, next) => {
+  const requestPerminute = getRequestCount(request.ip)
+  if (requestPerminute > 100) {
+    return response.status(429).send('Too Many Requests')
+  }
+  next();
+})
+ */
+
 // call listen method with logging middleware function to listen to a specific port provided where requests are made
 app.listen(PORT, () => {
   console.log(`Server is listening to http://localhost:${PORT}`)
 })
+
