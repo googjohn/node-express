@@ -14,9 +14,9 @@ let getRequestCount = 0;
 app.get('/', (request, response, next) => {
   getRequestCount++;
   console.log('This is a get response from a get request.');
-  // response.json({ message: 'Get request received!', requestCount: getRequestCount })
+  response.json({ message: 'Get request received!', requestCount: getRequestCount })
   // console.log('this will not work because we already completed the request-response cycle by sending a response')
-  next(); // without this next() function call the get response contained in the middleware function of the last get request will not be sent and just cause error. if we sent a response before this next function, then this will be ignored and just proceed to other methods and middleware below
+  // next(); // without this next() function call the get response contained in the middleware function of the last get request will not be sent and just cause error. if we sent a response before this next function, then this will be ignored and just proceed to other methods and middleware below
 })
 
 let putRequestCount = 0;
@@ -45,44 +45,14 @@ app.delete('/', (request, response) => {
   response.json({ message: 'Delete request received!', requestCount: deleteRequestCount })
 })
 
-
+// this will not be called because request-response cycle is completed due to sent response from the first get request
 app.get('/', (request, response) => {
-  // console.log('This will be called but no response will be sent because get http method has already sent a response.')
-  console.log('This response will be shown because we did not send a response from the first get request and next function was called')
+  console.log('This will be called but no response will be sent because get http method has already sent a response.')
+  // console.log('This response will be shown because we did not send a response from the first get request and next function was called')
   response.send(`Hello, your get request was received! No of requests: ${getRequestCount}`)
 })
 
-
-
-
-/* middleware >> is a functioin that have access to both request and response object and the next() function to call the next middleware function */
-
-/* app.use() >> this is a method that mounts a middleware function for all incoming requests. you can 
-  apply middleware at every level from global -- applied to all requests to specific route to a specific HTTP method  */
-
-/* app.use(express.static('public')) >> this is used to server static files that the client requests
-  what happens here is for example a client has made a request for styles.css at styles/styles.css,
-  this will look for it in the provided directory 'public' and append like public/styles/styles.css and if it finds the files
-  then it is automatically served/sent by the express as a response.
-*/
-// this usage of app.use() tells the script that every .json request is parsed automatically by express
-/* app.use(express.json())
-
-app.use((req, res, next) => {
-  console.log('This middleware runs for every request.')
-  console.log('Initial validation of request')
-  // res.send('hello from server')
-  next() // if next function is not called then it will block from calling the next middleware or HTTP methods
-}) */
-/* app.get('/', (req, res) => {
-  res.json({ message: 'are you sending to port 5000?' })
-}) */
-// this will never be called because the above HTTP method has already sent a response so the request-response cycle ended before it reached here unless it is a request to a different route then it will work you go to the route path
-/* app.get('/api', (req, res) => {
-  res.json({ message: 'hello again from server' })
-}) */
-
-// call listen middleware function to listen to a specific port provided where requests are made
+// call listen method with logging middleware function to listen to a specific port provided where requests are made
 app.listen(PORT, () => {
   console.log(`Server is listening to http://localhost:${PORT}`)
 })
