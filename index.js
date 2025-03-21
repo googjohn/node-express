@@ -12,6 +12,7 @@ const PORT = 5000;
 /* 
 app.route() >> this method provides a chainable interface for defining multiple HTTP methods on the
   same route path. this reduces redundancy and the code is more concise
+express.Router() >> creates a modular, mountable route handlers
 */
 
 // without app.route() - repetitive path specification

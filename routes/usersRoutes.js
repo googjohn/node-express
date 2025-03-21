@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const timeLog = (request, response, next) => {
-  console.log(`This is a middleware for /api/users router`)
+  console.log(`This is a router specific middleware for /api/users`)
   console.log(`Time: ${new Date().toISOString()}`)
   next();
 }
